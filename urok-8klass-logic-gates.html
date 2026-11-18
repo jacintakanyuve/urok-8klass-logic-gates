@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Информатика 8 класс: Логические элементы компьютера. Вентили И, ИЛИ, НЕ. Сумматор</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #dbeafe;
+      --accent: #7c3aed;
+      --accent-light: #ede9fe;
+      --success: #059669;
+      --success-light: #d1fae5;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #cbd5e1;
+      --radius: 16px;
+      --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 56px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+
+    .topbar-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .topbar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .timer-box {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.35s ease;
+    }
+
+    .nav-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-top: 10px;
+      scrollbar-width: none;
+    }
+
+    .nav-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-pill {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .nav-pill.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .nav-pill.done {
+      border-color: var(--success);
+      color: var(--success);
+      background: var(--success-light);
+    }
+
+    .nav-pill.active.done {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto 0;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(203, 213, 225, 0.75);
+    }
+
+    .module {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .module.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 1.52rem;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.28rem;
+      margin-bottom: 12px;
+      color: var(--primary-dark);
+    }
+
+    h3 {
+      font-size: 1.06rem;
+      margin: 16px 0 8px;
+    }
+
+    p {
+      margin-bottom: 12px;
+    }
+
+    ul, ol {
+      margin: 8px 0 14px 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .time-tag {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 3px 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .callout {
+      background: var(--surface-soft);
+      border-left: 4px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 0 12px 12px 0;
+      margin: 14px 0;
+    }
+
+    .callout.warn {
+      border-left-color: var(--warning);
+      background: var(--warning-light);
+    }
+
+    .callout.success {
+      border-left-color: var(--success);
+      background: var(--success-light);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .info-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .info-box strong {
+      display: block;
+      font-size: 1.02rem;
+      margin-bottom: 6px;
+      color: var(--primary-dark);
+    }
+
+    .formula-box {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 700;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin: 12px 0;
+      font-size: 0.96rem;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .interactive-zone {
+      background: #f8fafc;
+      border: 2px dashed #93c5fd;
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .interactive-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .btn-success {
+      background: var(--success);
+    }
+
+    .btn-success:hover {
+      background: #047857;
+    }
+
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 0.86rem;
+      border-radius: 8px;
+    }
+
+    .nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      margin: 8px 0 12px;
+    }
+
+    /* Кнопки выбора и переключатели сигналов */
+    .sort-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .choice-btn {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .choice-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .choice-btn.selected {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .choice-btn.correct {
+      background: var(--success);
+      color: #fff;
+      border-color: var(--success);
+    }
+
+    .choice-btn.wrong {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+    }
+
+    .sig-switch {
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .sig-switch.high {
+      background: var(--success);
+      color: #fff;
+      border-color: #047857;
+    }
+
+    /* SVG сцены */
+    .svg-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin: 12px 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    .svg-box svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Таблицы истинности */
+    table.tt {
+      width: 100%;
+      max-width: 440px;
+      margin: 10px auto;
+      border-collapse: collapse;
+      background: var(--surface);
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.95rem;
+    }
+
+    table.tt th, table.tt td {
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      text-align: center;
+    }
+
+    table.tt th {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    table.tt tr.active-row {
+      background: var(--success-light);
+      font-weight: 800;
+      outline: 2px solid var(--success);
+    }
+
+    .tt-select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .tt-select.ok {
+      background: var(--success-light);
+      border-color: var(--success);
+      color: #065f46;
+    }
+
+    .tt-select.bad {
+      background: var(--danger-light);
+      border-color: var(--danger);
+      color: #991b1b;
+    }
+
+    /* Карточки заданий */
+    .sort-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .sort-item-text {
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    /* Тест */
+    .quiz-q {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .quiz-opt {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.93rem;
+      transition: all 0.15s;
+    }
+
+    .quiz-opt:hover {
+      border-color: var(--primary);
+    }
+
+    .quiz-opt.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      font-weight: 600;
+    }
+
+    .quiz-opt.correct {
+      border-color: var(--success);
+      background: var(--success-light);
+      color: #065f46;
+      font-weight: 700;
+    }
+
+    .quiz-opt.wrong {
+      border-color: var(--danger);
+      background: var(--danger-light);
+      color: #991b1b;
+    }
+
+    /* Сертификат */
+    .cert-box {
+      border: 3px solid var(--primary);
+      background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+      border-radius: 18px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    .cert-grade {
+      display: inline-block;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--success);
+      background: var(--success-light);
+      padding: 8px 22px;
+      border-radius: 12px;
+      margin: 12px 0;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-weight: 600;
+      font-size: 0.93rem;
+    }
+
+    @media (max-width: 600px) {
+      .card { padding: 16px; }
+      h1 { font-size: 1.32rem; }
+      h2 { font-size: 1.16rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-row">
+        <span class="badge">Информатика • 8 класс</span>
+        <span class="timer-box" id="timerDisplay">Время урока: 00:00 / 45:00</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressBar"></div>
+      </div>
+      <nav class="nav-pills" id="navPills">
+        <button class="nav-pill active" onclick="goToStep(0)">Старт</button>
+        <button class="nav-pill" onclick="goToStep(1)">1. Базовые вентили</button>
+        <button class="nav-pill" onclick="goToStep(2)">2. Логические схемы</button>
+        <button class="nav-pill" onclick="goToStep(3)">3. Сумматор</button>
+        <button class="nav-pill" onclick="goToStep(4)">4. Итоговый тест</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ШАГ 0: ВВЕДЕНИЕ -->
+    <section class="module active" id="step-0">
+      <div class="card">
+        <span class="time-tag">Самостоятельный урок • 45 минут</span>
+        <h1>Логические элементы компьютера. Базовые логические вентили (И, ИЛИ, НЕ). Сумматор</h1>
+        <p>Внутри современного процессора находятся миллиарды микроскопических транзисторов, объединённых в <strong>логические элементы (вентили)</strong>. Они оперируют двумя уровнями электрического напряжения: низким (логический <strong>0</strong>) и высоким (логическая <strong>1</strong>).</p>
+        <p>На этом уроке ты изучишь устройство базовых вентилей <strong>И, ИЛИ, НЕ</strong>, научишься отслеживать прохождение сигналов через комбинационные схемы и поймёшь, как процессор складывает двоичные числа с помощью <strong>сумматора</strong>.</p>
+
+        <div class="callout">
+          <strong>Как пройти урок:</strong><br />
+          1. Изучай теорию в каждом из 3 разделов и тестируй схемы на живых интерактивных стендах.<br />
+          2. Выполняй встроенные задания для закрепления материала.<br />
+          3. В конце ответь на 8 вопросов итогового теста и отправь скриншот карточки с оценкой учителю.
+        </div>
+
+        <label for="studentNameInput"><strong>Введи фамилию, имя и класс перед началом:</strong></label>
+        <input type="text" id="studentNameInput" class="input-field" placeholder="Например: Лебедев Арсений, 8-А" />
+
+        <div class="nav-footer">
+          <span></span>
+          <button class="btn" onclick="startLesson()">Начать урок →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ШАГ 1: БАЗОВЫЕ ЛОГИЧЕСКИЕ ВЕНТИЛИ -->
+    <section class="module" id="step-1">
+      <div class="card">
+        <span class="time-tag">Модуль 1 • Рекомендуемое время: 12 минут</span>
+        <h2>1. Базовые логические вентили (И, ИЛИ, НЕ)</h2>
+        <p><strong>Логический элемент (вентиль)</strong> — это электронное устройство, реализующее одну из элементарных логических функций. В отечественных стандартах (ГОСТ) логические элементы изображают в виде прямоугольников со специальным символом в верхнем углу:</p>
+
+        <div class="grid-3">
+          <div class="info-box">
+            <strong>Вентиль «И» (Конъюнктор)</strong>
+            Обозначается символом <strong>&amp;</strong>. Выдаёт на выходе <strong>1</strong> тогда и только тогда, когда на <strong>всех</strong> входах поданы единицы ($F = A \land B$).
+          </div>
+          <div class="info-box">
+            <strong>Вентиль «ИЛИ» (Дизъюнктор)</strong>
+            Обозначается цифрой <strong>1</strong>. Выдаёт <strong>1</strong>, если <strong>хотя бы на одном</strong> входе присутствует <strong>1</strong> ($F = A \lor B$).
+          </div>
+          <div class="info-box">
+            <strong>Вентиль «НЕ» (Инвертор)</strong>
+            Имеет один вход, символ <strong>1</strong> и <strong>кружок инверсии</strong> на выходе. Меняет сигнал на противоположный ($F = \neg A$).
+          </div>
+        </div>
+
+        <div class="interactive-zone">
+          <div class="interactive-title">Живой стенд: Испытай базовые вентили</div>
+          <p style="font-size: 0.92rem;">Выбери логический вентиль и переключай входные сигналы <strong>A</strong> и <strong>B</strong> (зелёный провод = <code>1</code>, серый = <code>0</code>):</p>
+
+          <div class="sort-buttons" style="margin-bottom: 10px;">
+            <button class="choice-btn selected" onclick="selectGateType('AND', this)">Вентиль И (&amp;)</button>
+            <button class="choice-btn" onclick="selectGateType('OR', this)">Вентиль ИЛИ (1)</button>
+            <button class="choice-btn" onclick="selectGateType('NOT', this)">Вентиль НЕ (Инвертор)</button>
+          </div>
+
+          <div class="sort-buttons" style="margin-bottom: 10px;">
+            <button class="sig-switch" id="g1BtnA" onclick="toggleGate1Input('A')">Вход A = 0</button>
+            <button class="sig-switch" id="g1BtnB" onclick="toggleGate1Input('B')">Вход B = 0</button>
+          </div>
+
+          <div class="grid-2" style="align-items: center;">
+            <div class="svg-box" style="margin: 0;" id="gate1SvgWrap"></div>
+            <div id="gate1TruthTableWrap"></div>
+          </div>
+
+          <hr style="margin: 18px 0; border: none; border-top: 1px solid var(--border);" />
+
+          <div class="interactive-title">Мини-проверка: Определи работу вентиля</div>
+          <div id="m1TasksContainer"></div>
+          <button class="btn btn-sm" onclick="checkM1Tasks()">Проверить</button>
+          <div class="feedback" id="m1Feedback"></div>
+        </div>
+
+        <div class="nav-footer">
+          <button class="btn btn-secondary" onclick="goToStep(0)">← Назад</button>
+          <button class="btn" onclick="goToStep(2)">Дальше: Комбинационные схемы →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ШАГ 2: КОМБИНАЦИОННЫЕ ЛОГИЧЕСКИЕ СХЕМЫ -->
+    <section class="module" id="step-2">
+      <div class="card">
+        <span class="time-tag">Модуль 2 • Рекомендуемое время: 10 минут</span>
+        <h2>2. Построение и чтение комбинационных логических схем</h2>
+        <p>Соединяя выход одного вентиля со входом другого, можно собрать схему для вычисления <strong>любого сколь угодно сложного логического выражения</strong>. Чтобы определить выходной сигнал схемы:</p>
+        <ol>
+          <li>Записывают значения входных сигналов на левых входах схемы.</li>
+          <li>Последовательно слева направо вычисляют сигналы на выходах каждого вентиля (промежуточные провода).</li>
+          <li>Находят итоговое значение на правом выходе всей схемы.</li>
+        </ol>
+
+        <div class="interactive-zone">
+          <div class="interactive-title">Трассировщик сигналов: Схема F = (A ∧ B) ∨ ¬C</div>
+          <p style="font-size: 0.92rem;">Переключай входы <strong>A, B, C</strong> и наблюдай, как формируются промежуточные сигналы <strong>X = A ∧ B</strong> и <strong>Y = ¬C</strong>, а затем итоговый выход <strong>F</strong>:</p>
+
+          <div class="sort-buttons" style="margin-bottom: 10px;">
+            <button class="sig-switch" id="cBtnA" onclick="toggleCircuitInput('A')">A = 0</button>
+            <button class="sig-switch" id="cBtnB" onclick="toggleCircuitInput('B')">B = 0</button>
+            <button class="sig-switch" id="cBtnC" onclick="toggleCircuitInput('C')">C = 0</button>
+          </div>
+
+          <div class="svg-box" id="circuitSvgWrap"></div>
+          <div class="formula-box" id="circuitFormulaOut"></div>
+
+          <hr style="margin: 18px 0; border: none; border-top: 1px solid var(--border);" />
+
+          <div class="interactive-title">Практикум по схеме: Ответь на 3 вопроса</div>
+          <div id="m2TasksContainer"></div>
+          <button class="btn btn-sm" onclick="checkM2Tasks()">Проверить ответы</button>
+          <div class="feedback" id="m2Feedback"></div>
+        </div>
+
+        <div class="nav-footer">
+          <button class="btn btn-secondary" onclick="goToStep(1)">← Назад</button>
+          <button class="btn" onclick="goToStep(3)">Дальше: Сумматор →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ШАГ 3: СУММАТОР -->
+    <section class="module" id="step-3">
+      <div class="card">
+        <span class="time-tag">Модуль 3 • Рекомендуемое время: 15 минут</span>
+        <h2>3. Двоичный сумматор: как компьютер складывает числа</h2>
+        <p><strong>Сумматор</strong> — это логический узел арифметико-логического устройства (АЛУ) процессора, выполняющий сложение двоичных чисел. Вспомним правила сложения двух одноразрядных двоичных цифр:</p>
+
+        <div class="formula-box">
+          0 + 0 = 0 &nbsp;|&nbsp; 0 + 1 = 1 &nbsp;|&nbsp; 1 + 0 = 1 &nbsp;|&nbsp; 1 + 1 = 10₂ (сумма S = 0, перенос P = 1)
+        </div>
+
+        <div class="grid-2">
+          <div class="info-box">
+            <strong>Полусумматор (Half-Adder)</strong>
+            Складывает два бита (<strong>A</strong> и <strong>B</strong>) без учёта переноса из младшего разряда. Имеет <strong>2 входа</strong> и <strong>2 выхода</strong>:<br />
+            • <strong>S</strong> (Сумма): равна 1, когда входы различны (<em>исключающее ИЛИ</em>: $A \oplus B$).<br />
+            • <strong>P</strong> (Перенос в старший разряд): реализуется обычным вентилем <strong>И</strong> ($P = A \land B$).
+          </div>
+          <div class="info-box">
+            <strong>Полный одноразрядный сумматор</strong>
+            При сложении многоразрядных чисел (например, 8-битных или 64-битных) нужно учитывать перенос <strong>P<sub>вх</sub></strong> из предыдущего разряда. Полный сумматор имеет <strong>3 входа</strong> (A, B, P<sub>вх</sub>) и <strong>2 выхода</strong> (S, P<sub>вых</sub>), собираясь из двух полусумматоров и вентиля <strong>ИЛИ</strong>.
+          </div>
+        </div>
+
+        <div class="interactive-zone">
+          <div class="interactive-title">Симулятор двоичного сумматора</div>
+          <p style="font-size: 0.92rem;">Переключай режим и подавай единицы и нули на входы сумматора, чтобы увидеть его внутреннюю работу:</p>
+
+          <div class="sort-buttons" style="margin-bottom: 10px;">
+            <button class="choice-btn selected" id="adderModeHalf" onclick="setAdderMode('half', this)">Полусумматор (A + B)</button>
+            <button class="choice-btn" id="adderModeFull" onclick="setAdderMode('full', this)">Полный сумматор (A + B + P_вх)</button>
+          </div>
+
+          <div class="sort-buttons" style="margin-bottom: 10px;">
+            <button class="sig-switch" id="addBtnA" onclick="toggleAdderInput('A')">Слагаемое A = 0</button>
+            <button class="sig-switch" id="addBtnB" onclick="toggleAdderInput('B')">Слагаемое B = 0</button>
+            <button class="sig-switch" id="addBtnCin" onclick="toggleAdderInput('Cin')" style="display: none;">Перенос P_вх = 0</button>
+          </div>
+
+          <div class="svg-box" id="adderSvgWrap"></div>
+          <div class="callout success" id="adderMathBox"></div>
+
+          <hr style="margin: 18px 0; border: none; border-top: 1px solid var(--border);" />
+
+          <div class="interactive-title">Задание: Заполни таблицу истинности полусумматора</div>
+          <p style="font-size: 0.92rem;">Выбери правильные значения переноса <strong>P</strong> и суммы <strong>S</strong> для всех четырёх наборов слагаемых A и B:</p>
+
+          <table class="tt">
+            <thead>
+              <tr>
+                <th>A</th>
+                <th>B</th>
+                <th>Перенос P (A ∧ B)</th>
+                <th>Сумма S (A ⊕ B)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0</td><td>0</td>
+                <td><select class="tt-select" id="ha-p-0"><option value="">?</option><option value="0">0</option><option value="1">1</option></select></td>
+                <td><select class="tt-select" id="ha-s-0"><option value="">?</option><option value="0">0</option><option value="1">1</option></select></td>
+              </tr>
+              <tr>
+                <td>0</td><td>1</td>
+                <td><select class="tt-select" id="ha-p-1"><option value="">?</option><option value="0">0</option><option value="1">1</option></select></td>
+                <td><select class="tt-select" id="ha-s-1"><option value="">?</option><option value="0">0</option><option value="1">1</option></select></td>
+              </tr>
+              <tr>
+                <td>1</td><td>0</td>
+                <td><select class="tt-select" id="ha-p-2"><option value="">?</option><option value="0">0</option><option value="1">1</option></select></td>
+                <td><select class="tt-select" id="ha-s-2"><option value="">?</option><option value="0">0</option><option value="1">1</option></select></td>
+              </tr>
+              <tr>
+                <td>1</td><td>1</td>
+                <td><select class="tt-select" id="ha-p-3"><option value="">?</option><option value="0">0</option><option value="1">1</option></select></td>
+                <td><select class="tt-select" id="ha-s-3"><option value="">?</option><option value="0">0</option><option value="1">1</option></select></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="text-align: center; margin-top: 10px;">
+            <button class="btn btn-sm" onclick="checkHalfAdderTable()">Проверить таблицу сумматора</button>
+          </div>
+          <div class="feedback" id="m3Feedback"></div>
+        </div>
+
+        <div class="nav-footer">
+          <button class="btn btn-secondary" onclick="goToStep(2)">← Назад</button>
+          <button class="btn" onclick="goToStep(4)">Перейти к итоговому тесту →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ШАГ 4: ИТОГОВЫЙ ТЕСТ -->
+    <section class="module" id="step-4">
+      <div class="card">
+        <span class="time-tag">Модуль 4 • Рекомендуемое время: 8 минут</span>
+        <h2>4. Итоговый контроль знаний</h2>
+        <p>Ответь на 8 вопросов по всем разделам урока. После проверки сформируется именная карточка с оценкой.</p>
+
+        <div id="finalQuizContainer"></div>
+
+        <button class="btn btn-success" style="width: 100%; margin-top: 10px;" onclick="finishLesson()">Завершить урок и получить оценку</button>
+
+        <div id="certificateSection" style="display: none;">
+          <div class="cert-box">
+            <div style="font-size: 0.88rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">
+              Карточка прохождения урока • Информатика 8 класс
+            </div>
+            <h2 id="certStudentName" style="margin: 8px 0; color: var(--text);">Ученик 8 класса</h2>
+            <p style="margin-bottom: 4px;">Тема: «Логические элементы компьютера. Базовые вентили. Сумматор»</p>
+            <div class="cert-grade" id="certGradeText">Оценка: 5 (Отлично)</div>
+            <p id="certStats" style="font-weight: 600;"></p>
+            <p id="certCode" style="font-family: monospace; font-size: 0.9rem; color: var(--text-muted);"></p>
+            <div class="callout success" style="text-align: left; margin-top: 12px;">
+              Сделай скриншот этой карточки и отправь учителю для выставления оценки в журнал!
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-footer">
+          <button class="btn btn-secondary" onclick="goToStep(3)">← Вернуться к теории</button>
+          <button class="btn btn-secondary btn-sm" onclick="resetAll()">Пройти заново</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // --- СОСТОЯНИЕ ---
+    const state = {
+      currentStep: 0,
+      completedSteps: [false, false, false, false, false],
+      secondsElapsed: 0,
+      studentName: "",
+      gateType: "AND",
+      gateA: 0,
+      gateB: 0,
+      circA: 0,
+      circB: 0,
+      circC: 0,
+      adderMode: "half",
+      addA: 0,
+      addB: 0,
+      addCin: 0
+    };
+
+    // --- ТАЙМЕР ---
+    setInterval(() => {
+      state.secondsElapsed++;
+      const m = String(Math.floor(state.secondsElapsed / 60)).padStart(2, "0");
+      const s = String(state.secondsElapsed % 60).padStart(2, "0");
+      document.getElementById("timerDisplay").textContent = `Время урока: ${m}:${s} / 45:00`;
+    }, 1000);
+
+    // --- НАВИГАЦИЯ ---
+    function goToStep(idx) {
+      document.querySelectorAll(".module").forEach((el, i) => el.classList.toggle("active", idx === i));
+      document.querySelectorAll(".nav-pill").forEach((pill, i) => {
+        pill.classList.toggle("active", idx === i);
+        pill.classList.toggle("done", state.completedSteps[i]);
+      });
+      state.currentStep = idx;
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function markStepDone(idx) {
+      state.completedSteps[idx] = true;
+      const pills = document.querySelectorAll(".nav-pill");
+      if (pills[idx]) pills[idx].classList.add("done");
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const done = state.completedSteps.filter(Boolean).length;
+      const pct = Math.min(100, Math.round((done / 4) * 100));
+      document.getElementById("progressBar").style.width = `${pct}%`;
+    }
+
+    function startLesson() {
+      const val = document.getElementById("studentNameInput").value.trim();
+      state.studentName = val || "Ученик 8 класса";
+      markStepDone(0);
+      goToStep(1);
+    }
+
+    // --- МОДУЛЬ 1: БАЗОВЫЕ ВЕНТИЛИ ---
+    function selectGateType(type, btn) {
+      state.gateType = type;
+      document.querySelectorAll("#step-1 .sort-buttons:first-of-type .choice-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      document.getElementById("g1BtnB").style.display = type === "NOT" ? "none" : "inline-flex";
+      renderGate1();
+    }
+
+    function toggleGate1Input(which) {
+      if (which === "A") {
+        state.gateA = state.gateA === 0 ? 1 : 0;
+        const btn = document.getElementById("g1BtnA");
+        btn.textContent = `Вход A = ${state.gateA}`;
+        btn.classList.toggle("high", state.gateA === 1);
+      } else {
+        state.gateB = state.gateB === 0 ? 1 : 0;
+        const btn = document.getElementById("g1BtnB");
+        btn.textContent = `Вход B = ${state.gateB}`;
+        btn.classList.toggle("high", state.gateB === 1);
+      }
+      renderGate1();
+    }
+
+    function wireColor(val) {
+      return val === 1 ? "#059669" : "#94a3b8";
+    }
+
+    function renderGate1() {
+      const { gateType, gateA, gateB } = state;
+      let out = 0;
+      let symbol = "&";
+      let title = "Конъюнктор (И)";
+      if (gateType === "AND") {
+        out = (gateA && gateB) ? 1 : 0;
+        symbol = "&";
+        title = "Вентиль И (F = A ∧ B)";
+      } else if (gateType === "OR") {
+        out = (gateA || gateB) ? 1 : 0;
+        symbol = "1";
+        title = "Вентиль ИЛИ (F = A ∨ B)";
+      } else {
+        out = gateA === 0 ? 1 : 0;
+        symbol = "1";
+        title = "Инвертор НЕ (F = ¬A)";
+      }
+
+      let svg = `<svg viewBox="0 0 320 175" style="max-width:320px;">`;
+      svg += `<text x="160" y="20" font-size="13" font-weight="bold" text-anchor="middle" fill="#1d4ed8">${title}</text>`;
+
+      if (gateType === "NOT") {
+        svg += `
+          <line x1="35" y1="95" x2="115" y2="95" stroke="${wireColor(gateA)}" stroke-width="4" />
+          <text x="55" y="85" font-size="14" font-weight="bold" fill="${wireColor(gateA)}">A = ${gateA}</text>
+          <rect x="115" y="55" width="70" height="80" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="3" />
+          <text x="168" y="80" font-size="20" font-weight="bold" text-anchor="middle" fill="#1d4ed8">1</text>
+          <circle cx="192" cy="95" r="7" fill="#ffffff" stroke="#1d4ed8" stroke-width="3" />
+          <line x1="199" y1="95" x2="285" y2="95" stroke="${wireColor(out)}" stroke-width="4" />
+          <text x="242" y="85" font-size="14" font-weight="bold" fill="${wireColor(out)}">F = ${out}</text>
+        `;
+      } else {
+        svg += `
+          <line x1="35" y1="70" x2="115" y2="70" stroke="${wireColor(gateA)}" stroke-width="4" />
+          <text x="55" y="60" font-size="14" font-weight="bold" fill="${wireColor(gateA)}">A = ${gateA}</text>
+          <line x1="35" y1="125" x2="115" y2="125" stroke="${wireColor(gateB)}" stroke-width="4" />
+          <text x="55" y="115" font-size="14" font-weight="bold" fill="${wireColor(gateB)}">B = ${gateB}</text>
+          <rect x="115" y="45" width="75" height="105" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="3" />
+          <text x="172" y="75" font-size="22" font-weight="bold" text-anchor="middle" fill="#1d4ed8">${symbol}</text>
+          <line x1="190" y1="97" x2="285" y2="97" stroke="${wireColor(out)}" stroke-width="4" />
+          <text x="242" y="87" font-size="14" font-weight="bold" fill="${wireColor(out)}">F = ${out}</text>
+        `;
+      }
+      svg += `</svg>`;
+      document.getElementById("gate1SvgWrap").innerHTML = svg;
+
+      // Таблица истинности
+      const ttWrap = document.getElementById("gate1TruthTableWrap");
+      if (gateType === "NOT") {
+        ttWrap.innerHTML = `
+          <table class="tt">
+            <thead><tr><th>A</th><th>F = ¬A</th></tr></thead>
+            <tbody>
+              <tr class="${gateA === 0 ? 'active-row' : ''}"><td>0</td><td>1</td></tr>
+              <tr class="${gateA === 1 ? 'active-row' : ''}"><td>1</td><td>0</td></tr>
+            </tbody>
+          </table>
+        `;
+      } else {
+        const rows = [[0,0], [0,1], [1,0], [1,1]];
+        ttWrap.innerHTML = `
+          <table class="tt">
+            <thead><tr><th>A</th><th>B</th><th>F</th></tr></thead>
+            <tbody>
+              ${rows.map(([a, b]) => {
+                const res = gateType === "AND" ? (a && b ? 1 : 0) : (a || b ? 1 : 0);
+                const act = (a === gateA && b === gateB) ? "active-row" : "";
+                return `<tr class="${act}"><td>${a}</td><td>${b}</td><td>${res}</td></tr>`;
+              }).join("")}
+            </tbody>
+          </table>
+        `;
+      }
+    }
+    renderGate1();
+
+    const m1Data = [
+      {
+        text: "На один вход вентиля «И» (&) подали 1, а на другой — 0. Какой сигнал будет на выходе?",
+        options: ["0", "1"],
+        answer: "0"
+      },
+      {
+        text: "На один вход вентиля «ИЛИ» (1) подали 0, а на другой — 1. Какой сигнал будет на выходе?",
+        options: ["0", "1"],
+        answer: "1"
+      },
+      {
+        text: "Какой элемент обозначается прямоугольником с цифрой «1» и кружком на выходе?",
+        options: ["Конъюнктор (И)", "Дизъюнктор (ИЛИ)", "Инвертор (НЕ)"],
+        answer: "Инвертор (НЕ)"
+      }
+    ];
+    const m1User = {};
+
+    function renderM1Tasks() {
+      const box = document.getElementById("m1TasksContainer");
+      box.innerHTML = "";
+      m1Data.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = "sort-item";
+        div.innerHTML = `
+          <div class="sort-item-text"><strong>${idx + 1}.</strong> ${item.text}</div>
+          <div class="sort-buttons" id="m1t-btns-${idx}">
+            ${item.options.map(o => `<button class="choice-btn" onclick="selM1(${idx}, '${o}', this)">${o}</button>`).join("")}
+          </div>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    function selM1(idx, opt, btn) {
+      m1User[idx] = opt;
+      document.getElementById(`m1t-btns-${idx}`).querySelectorAll(".choice-btn").forEach(b => b.classList.remove("selected", "correct", "wrong"));
+      btn.classList.add("selected");
+    }
+
+    function checkM1Tasks() {
+      let ok = 0;
+      m1Data.forEach((item, idx) => {
+        const chosen = m1User[idx];
+        document.getElementById(`m1t-btns-${idx}`).querySelectorAll(".choice-btn").forEach(b => {
+          b.classList.remove("selected", "correct", "wrong");
+          if (b.textContent === chosen) {
+            if (chosen === item.answer) { b.classList.add("correct"); ok++; }
+            else { b.classList.add("wrong"); }
+          }
+        });
+      });
+      const fb = document.getElementById("m1Feedback");
+      if (ok === m1Data.length) {
+        fb.style.color = "var(--success)";
+        fb.textContent = "Верно! Принципы работы базовых вентилей усвоены.";
+        markStepDone(1);
+      } else {
+        fb.style.color = "var(--warning)";
+        fb.textContent = `Правильно: ${ok} из ${m1Data.length}. Проверь выделенные красным пункты.`;
+      }
+    }
+    renderM1Tasks();
+
+    // --- МОДУЛЬ 2: КОМБИНАЦИОННАЯ СХЕМА F = (A ∧ B) ∨ ¬C ---
+    function toggleCircuitInput(v) {
+      if (v === "A") state.circA = state.circA === 0 ? 1 : 0;
+      if (v === "B") state.circB = state.circB === 0 ? 1 : 0;
+      if (v === "C") state.circC = state.circC === 0 ? 1 : 0;
+
+      ["A", "B", "C"].forEach(k => {
+        const val = state[`circ${k}`];
+        const btn = document.getElementById(`cBtn${k}`);
+        btn.textContent = `${k} = ${val}`;
+        btn.classList.toggle("high", val === 1);
+      });
+      renderCircuitSvg();
+    }
+
+    function renderCircuitSvg() {
+      const { circA: A, circB: B, circC: C } = state;
+      const X = (A && B) ? 1 : 0;
+      const Y = C === 0 ? 1 : 0;
+      const F = (X || Y) ? 1 : 0;
+
+      const svg = `
+        <svg viewBox="0 0 640 230" style="max-width:640px;">
+          <!-- Вход A и B -> Вентиль И (&) -->
+          <line x1="30" y1="45" x2="140" y2="45" stroke="${wireColor(A)}" stroke-width="3.5" />
+          <text x="45" y="37" font-size="13" font-weight="bold" fill="${wireColor(A)}">A = ${A}</text>
+
+          <line x1="30" y1="90" x2="140" y2="90" stroke="${wireColor(B)}" stroke-width="3.5" />
+          <text x="45" y="82" font-size="13" font-weight="bold" fill="${wireColor(B)}">B = ${B}</text>
+
+          <rect x="140" y="30" width="68" height="75" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5" />
+          <text x="190" y="55" font-size="20" font-weight="bold" text-anchor="middle" fill="#1d4ed8">&amp;</text>
+
+          <!-- Провод X = A ∧ B -->
+          <polyline points="208,67 310,67 310,95 370,95" fill="none" stroke="${wireColor(X)}" stroke-width="3.5" />
+          <text x="260" y="58" font-size="12" font-weight="bold" text-anchor="middle" fill="${wireColor(X)}">X = A∧B = ${X}</text>
+
+          <!-- Вход C -> Инвертор НЕ -->
+          <line x1="30" y1="170" x2="140" y2="170" stroke="${wireColor(C)}" stroke-width="3.5" />
+          <text x="45" y="162" font-size="13" font-weight="bold" fill="${wireColor(C)}">C = ${C}</text>
+
+          <rect x="140" y="140" width="60" height="60" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5" />
+          <text x="184" y="162" font-size="18" font-weight="bold" text-anchor="middle" fill="#7c3aed">1</text>
+          <circle cx="206" cy="170" r="6" fill="#ffffff" stroke="#7c3aed" stroke-width="2.5" />
+
+          <!-- Провод Y = ¬C -->
+          <polyline points="212,170 310,170 310,135 370,135" fill="none" stroke="${wireColor(Y)}" stroke-width="3.5" />
+          <text x="260" y="190" font-size="12" font-weight="bold" text-anchor="middle" fill="${wireColor(Y)}">Y = ¬C = ${Y}</text>
+
+          <!-- Финальный вентиль ИЛИ (1) -->
+          <rect x="370" y="75" width="72" height="80" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5" />
+          <text x="424" y="102" font-size="20" font-weight="bold" text-anchor="middle" fill="#1d4ed8">1</text>
+
+          <!-- Выход F -->
+          <line x1="442" y1="115" x2="600" y2="115" stroke="${wireColor(F)}" stroke-width="4.5" />
+          <text x="520" y="103" font-size="15" font-weight="bold" text-anchor="middle" fill="${wireColor(F)}">Выход F = ${F}</text>
+        </svg>
+      `;
+      document.getElementById("circuitSvgWrap").innerHTML = svg;
+      document.getElementById("circuitFormulaOut").textContent =
+        `F = (${A} ∧ ${B}) ∨ ¬${C} = ${X} ∨ ${Y} = ${F}`;
+    }
+    renderCircuitSvg();
+
+    const m2Data = [
+      {
+        text: "1. Чему будет равен выход F данной схемы при наборе A = 0, B = 1, C = 1?",
+        options: ["F = 0", "F = 1"],
+        answer: "F = 0"
+      },
+      {
+        text: "2. Чему будет равен выход F при наборе A = 1, B = 1, C = 1?",
+        options: ["F = 0", "F = 1"],
+        answer: "F = 1"
+      },
+      {
+        text: "3. Сколько всего логических вентилей использовано в этой схеме?",
+        options: ["2 вентиля", "3 вентиля", "4 вентиля"],
+        answer: "3 вентиля"
+      }
+    ];
+    const m2User = {};
+
+    function renderM2Tasks() {
+      const box = document.getElementById("m2TasksContainer");
+      box.innerHTML = "";
+      m2Data.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = "sort-item";
+        div.innerHTML = `
+          <div class="sort-item-text"><strong>${item.text}</strong></div>
+          <div class="sort-buttons" id="m2t-btns-${idx}">
+            ${item.options.map(o => `<button class="choice-btn" onclick="selM2(${idx}, '${o}', this)">${o}</button>`).join("")}
+          </div>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    function selM2(idx, opt, btn) {
+      m2User[idx] = opt;
+      document.getElementById(`m2t-btns-${idx}`).querySelectorAll(".choice-btn").forEach(b => b.classList.remove("selected", "correct", "wrong"));
+      btn.classList.add("selected");
+    }
+
+    function checkM2Tasks() {
+      let ok = 0;
+      m2Data.forEach((item, idx) => {
+        const chosen = m2User[idx];
+        document.getElementById(`m2t-btns-${idx}`).querySelectorAll(".choice-btn").forEach(b => {
+          b.classList.remove("selected", "correct", "wrong");
+          if (b.textContent === chosen) {
+            if (chosen === item.answer) { b.classList.add("correct"); ok++; }
+            else { b.classList.add("wrong"); }
+          }
+        });
+      });
+      const fb = document.getElementById("m2Feedback");
+      if (ok === m2Data.length) {
+        fb.style.color = "var(--success)";
+        fb.textContent = "Отлично! Ты уверенно читаешь комбинационные схемы.";
+        markStepDone(2);
+      } else {
+        fb.style.color = "var(--warning)";
+        fb.textContent = `Правильно: ${ok} из ${m2Data.length}. Проверь на трассировщике выше!`;
+      }
+    }
+    renderM2Tasks();
+
+    // --- МОДУЛЬ 3: СИМУЛЯТОР СУММАТОРА ---
+    function setAdderMode(mode, btn) {
+      state.adderMode = mode;
+      document.getElementById("adderModeHalf").classList.remove("selected");
+      document.getElementById("adderModeFull").classList.remove("selected");
+      btn.classList.add("selected");
+      document.getElementById("addBtnCin").style.display = mode === "full" ? "inline-flex" : "none";
+      renderAdder();
+    }
+
+    function toggleAdderInput(which) {
+      if (which === "A") state.addA = state.addA === 0 ? 1 : 0;
+      if (which === "B") state.addB = state.addB === 0 ? 1 : 0;
+      if (which === "Cin") state.addCin = state.addCin === 0 ? 1 : 0;
+
+      const btnA = document.getElementById("addBtnA");
+      btnA.textContent = `Слагаемое A = ${state.addA}`;
+      btnA.classList.toggle("high", state.addA === 1);
+
+      const btnB = document.getElementById("addBtnB");
+      btnB.textContent = `Слагаемое B = ${state.addB}`;
+      btnB.classList.toggle("high", state.addB === 1);
+
+      const btnC = document.getElementById("addBtnCin");
+      btnC.textContent = `Перенос P_вх = ${state.addCin}`;
+      btnC.classList.toggle("high", state.addCin === 1);
+
+      renderAdder();
+    }
+
+    function renderAdder() {
+      const { adderMode, addA: A, addB: B, addCin: Cin } = state;
+      const svgWrap = document.getElementById("adderSvgWrap");
+      const mathBox = document.getElementById("adderMathBox");
+
+      if (adderMode === "half") {
+        const S = (A ^ B);
+        const P = (A && B) ? 1 : 0;
+
+        svgWrap.innerHTML = `
+          <svg viewBox="0 0 560 220" style="max-width:560px;">
+            <text x="280" y="20" font-size="13" font-weight="bold" text-anchor="middle" fill="#1d4ed8">Схема полусумматора (Half-Adder)</text>
+
+            <!-- Входные шины A и B -->
+            <line x1="35" y1="60" x2="210" y2="60" stroke="${wireColor(A)}" stroke-width="3.5" />
+            <text x="50" y="50" font-size="14" font-weight="bold" fill="${wireColor(A)}">A = ${A}</text>
+            <polyline points="110,60 110,145 210,145" fill="none" stroke="${wireColor(A)}" stroke-width="3" />
+            <circle cx="110" cy="60" r="4.5" fill="${wireColor(A)}" />
+
+            <line x1="35" y1="95" x2="210" y2="95" stroke="${wireColor(B)}" stroke-width="3.5" />
+            <text x="50" y="87" font-size="14" font-weight="bold" fill="${wireColor(B)}">B = ${B}</text>
+            <polyline points="145,95 145,175 210,175" fill="none" stroke="${wireColor(B)}" stroke-width="3" />
+            <circle cx="145" cy="95" r="4.5" fill="${wireColor(B)}" />
+
+            <!-- Верхний блок: Сумма S (Исключающее ИЛИ) -->
+            <rect x="210" y="45" width="115" height="65" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5" />
+            <text x="267" y="74" font-size="13" font-weight="bold" text-anchor="middle" fill="#5b21b6">ИСКЛ. ИЛИ</text>
+            <text x="267" y="94" font-size="13" font-weight="bold" text-anchor="middle" fill="#5b21b6">(A ⊕ B)</text>
+
+            <line x1="325" y1="77" x2="520" y2="77" stroke="${wireColor(S)}" stroke-width="4" />
+            <text x="425" y="67" font-size="14" font-weight="bold" text-anchor="middle" fill="${wireColor(S)}">Сумма S = ${S}</text>
+
+            <!-- Нижний блок: Перенос P (Вентиль И) -->
+            <rect x="210" y="130" width="115" height="62" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5" />
+            <text x="267" y="158" font-size="14" font-weight="bold" text-anchor="middle" fill="#1d4ed8">Вентиль И (&amp;)</text>
+            <text x="267" y="177" font-size="13" font-weight="bold" text-anchor="middle" fill="#1d4ed8">(A ∧ B)</text>
+
+            <line x1="325" y1="161" x2="520" y2="161" stroke="${wireColor(P)}" stroke-width="4" />
+            <text x="425" y="151" font-size="14" font-weight="bold" text-anchor="middle" fill="${wireColor(P)}">Перенос P = ${P}</text>
+          </svg>
+        `;
+
+        mathBox.innerHTML = `
+          <strong>Двоичное сложение в полусумматоре:</strong>
+          ${A}₂ + ${B}₂ = <strong>${P}${S}₂</strong> &nbsp;(старший бит переноса P = <strong>${P}</strong>, младший бит суммы S = <strong>${S}</strong>)
+        `;
+      } else {
+        const s1 = A ^ B;
+        const p1 = (A && B) ? 1 : 0;
+        const S = s1 ^ Cin;
+        const p2 = (s1 && Cin) ? 1 : 0;
+        const Pout = (p1 || p2) ? 1 : 0;
+
+        svgWrap.innerHTML = `
+          <svg viewBox="0 0 640 230" style="max-width:640px;">
+            <text x="320" y="20" font-size="13" font-weight="bold" text-anchor="middle" fill="#1d4ed8">Полный одноразрядный сумматор (из двух полусумматоров и вентиля ИЛИ)</text>
+
+            <!-- Входы A, B, Cin -->
+            <line x1="25" y1="60" x2="145" y2="60" stroke="${wireColor(A)}" stroke-width="3.5" />
+            <text x="40" y="51" font-size="13" font-weight="bold" fill="${wireColor(A)}">A = ${A}</text>
+
+            <line x1="25" y1="95" x2="145" y2="95" stroke="${wireColor(B)}" stroke-width="3.5" />
+            <text x="40" y="86" font-size="13" font-weight="bold" fill="${wireColor(B)}">B = ${B}</text>
+
+            <line x1="25" y1="165" x2="310" y2="165" stroke="${wireColor(Cin)}" stroke-width="3.5" />
+            <text x="40" y="155" font-size="13" font-weight="bold" fill="${wireColor(Cin)}">P_вх = ${Cin}</text>
+
+            <!-- Полусумматор 1 -->
+            <rect x="145" y="42" width="115" height="72" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5" />
+            <text x="202" y="72" font-size="12" font-weight="bold" text-anchor="middle" fill="#1d4ed8">Полусумматор 1</text>
+            <text x="202" y="92" font-size="11" font-weight="bold" text-anchor="middle" fill="#475569">S₁=${s1}, P₁=${p1}</text>
+
+            <!-- S1 -> Полусумматор 2 -->
+            <polyline points="260,65 290,65 290,125 310,125" fill="none" stroke="${wireColor(s1)}" stroke-width="3" />
+
+            <!-- Полусумматор 2 -->
+            <rect x="310" y="108" width="115" height="72" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5" />
+            <text x="367" y="138" font-size="12" font-weight="bold" text-anchor="middle" fill="#5b21b6">Полусумматор 2</text>
+            <text x="367" y="158" font-size="11" font-weight="bold" text-anchor="middle" fill="#475569">S=${S}, P₂=${p2}</text>
+
+            <!-- Выход S -->
+            <line x1="425" y1="128" x2="610" y2="128" stroke="${wireColor(S)}" stroke-width="4" />
+            <text x="525" y="118" font-size="14" font-weight="bold" text-anchor="middle" fill="${wireColor(S)}">Сумма S = ${S}</text>
+
+            <!-- P1 и P2 -> Вентиль ИЛИ (1) -->
+            <polyline points="260,95 455,95 455,172 480,172" fill="none" stroke="${wireColor(p1)}" stroke-width="2.8" />
+            <polyline points="425,165 445,165 445,196 480,196" fill="none" stroke="${wireColor(p2)}" stroke-width="2.8" />
+
+            <rect x="480" y="160" width="48" height="48" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5" />
+            <text x="514" y="182" font-size="17" font-weight="bold" text-anchor="middle" fill="#1d4ed8">1</text>
+
+            <!-- Выход P_вых -->
+            <line x1="528" y1="184" x2="615" y2="184" stroke="${wireColor(Pout)}" stroke-width="4" />
+            <text x="572" y="173" font-size="13" font-weight="bold" text-anchor="middle" fill="${wireColor(Pout)}">P_вых = ${Pout}</text>
+          </svg>
+        `;
+
+        mathBox.innerHTML = `
+          <strong>Двоичное сложение с учётом переноса:</strong>
+          ${A}₂ + ${B}₂ + ${Cin}₂ = <strong>${Pout}${S}₂</strong> &nbsp;(перенос P_вых = <strong>${Pout}</strong>, сумма S = <strong>${S}</strong>)
+        `;
+      }
+    }
+    renderAdder();
+
+    function checkHalfAdderTable() {
+      const expectedP = ["0", "0", "0", "1"];
+      const expectedS = ["0", "1", "1", "0"];
+      let ok = 0;
+
+      for (let i = 0; i < 4; i++) {
+        const selP = document.getElementById(`ha-p-${i}`);
+        const selS = document.getElementById(`ha-s-${i}`);
+        selP.classList.remove("ok", "bad");
+        selS.classList.remove("ok", "bad");
+
+        if (selP.value === expectedP[i]) { selP.classList.add("ok"); ok++; }
+        else { selP.classList.add("bad"); }
+
+        if (selS.value === expectedS[i]) { selS.classList.add("ok"); ok++; }
+        else { selS.classList.add("bad"); }
+      }
+
+      const fb = document.getElementById("m3Feedback");
+      if (ok === 8) {
+        fb.style.color = "var(--success)";
+        fb.textContent = "Безупречно! Таблица истинности полусумматора заполнена полностью верно!";
+        markStepDone(3);
+      } else {
+        fb.style.color = "var(--warning)";
+        fb.textContent = `Верно заполнено ячеек: ${ok} из 8. Проверь красные ячейки (помни: 1 + 1 = 10₂).`;
+      }
+    }
+
+    // --- МОДУЛЬ 4: ИТОГОВЫЙ ТЕСТ ---
+    const quizData = [
+      {
+        q: "1. Что физически представляют собой логические «1» и «0» в электронных схемах компьютера?",
+        options: [
+          "Наличие и отсутствие механического контакта",
+          "Высокий и низкий уровни электрического напряжения",
+          "Положительную и отрицательную температуру процессора"
+        ],
+        correct: 1
+      },
+      {
+        q: "2. Какой символ записывается в прямоугольнике логического элемента «И» (конъюнктора) по отечественному стандарту (ГОСТ)?",
+        options: ["&", "1", "0"],
+        correct: 0
+      },
+      {
+        q: "3. Что означает небольшой кружок на выходе логического элемента?",
+        options: [
+          "Удвоение входного сигнала",
+          "Заземление схемы",
+          "Инверсию (логическое НЕ — изменение сигнала на противоположный)"
+        ],
+        correct: 2
+      },
+      {
+        q: "4. При каком условии двухвходовой логический вентиль «И» выдаёт на выходе сигнал 1?",
+        options: [
+          "Когда хотя бы на одном входе есть 1",
+          "Только когда на обоих входах одновременно поданы 1",
+          "Когда на обоих входах поданы 0"
+        ],
+        correct: 1
+      },
+      {
+        q: "5. На входы схемы F = ¬(A ∨ B) подали сигналы A = 0, B = 1. Чему равен выход F?",
+        options: ["0", "1", "2"],
+        correct: 0
+      },
+      {
+        q: "6. Чему равна сумма двух одноразрядных двоичных единиц (1₂ + 1₂)?",
+        options: [
+          "1₂ (сумма 1, перенос 0)",
+          "2₂ (сумма 2, перенос 0)",
+          "10₂ (сумма 0, перенос в старший разряд 1)"
+        ],
+        correct: 2
+      },
+      {
+        q: "7. Какой базовый логический вентиль формирует сигнал переноса P в полусумматоре?",
+        options: ["Вентиль И (&)", "Вентиль НЕ (инвертор)", "Вентиль ИЛИ (1)"],
+        correct: 0
+      },
+      {
+        q: "8. Сколько входов и сколько выходов имеет полный одноразрядный сумматор?",
+        options: [
+          "2 входа и 1 выход",
+          "3 входа (A, B, P_вх) и 2 выхода (S, P_вых)",
+          "4 входа и 4 выхода"
+        ],
+        correct: 1
+      }
+    ];
+    const quizAnswers = {};
+
+    function renderQuiz() {
+      const box = document.getElementById("finalQuizContainer");
+      box.innerHTML = "";
+      quizData.forEach((item, qIdx) => {
+        const div = document.createElement("div");
+        div.className = "quiz-q";
+        div.innerHTML = `
+          <div><strong>${item.q}</strong></div>
+          <div id="quiz-opts-${qIdx}">
+            ${item.options.map((opt, oIdx) => `
+              <button class="quiz-opt" onclick="selectQuiz(${qIdx}, ${oIdx}, this)">${opt}</button>
+            `).join("")}
+          </div>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    function selectQuiz(qIdx, oIdx, btn) {
+      quizAnswers[qIdx] = oIdx;
+      const box = document.getElementById(`quiz-opts-${qIdx}`);
+      box.querySelectorAll(".quiz-opt").forEach(b => b.classList.remove("selected", "correct", "wrong"));
+      btn.classList.add("selected");
+    }
+
+    function finishLesson() {
+      if (Object.keys(quizAnswers).length < quizData.length) {
+        alert("Ответь на все 8 вопросов теста перед завершением урока!");
+        return;
+      }
+
+      let score = 0;
+      quizData.forEach((item, qIdx) => {
+        const chosen = quizAnswers[qIdx];
+        const box = document.getElementById(`quiz-opts-${qIdx}`);
+        box.querySelectorAll(".quiz-opt").forEach((b, oIdx) => {
+          b.classList.remove("selected", "correct", "wrong");
+          if (oIdx === item.correct) b.classList.add("correct");
+          else if (oIdx === chosen && chosen !== item.correct) b.classList.add("wrong");
+        });
+        if (chosen === item.correct) score++;
+      });
+
+      let grade = 2;
+      let label = "Нужно повторить тему";
+      if (score >= 7) { grade = 5; label = "Отлично"; }
+      else if (score >= 5) { grade = 4; label = "Хорошо"; }
+      else if (score >= 4) { grade = 3; label = "Удовлетворительно"; }
+
+      markStepDone(4);
+      const mins = Math.max(1, Math.round(state.secondsElapsed / 60));
+      const d = new Date();
+      const code = `INF8-GATE-${score}${grade}-${d.getDate()}${d.getMonth() + 1}`;
+
+      document.getElementById("certStudentName").textContent = state.studentName || "Ученик 8 класса";
+      document.getElementById("certGradeText").textContent = `Оценка: ${grade} (${label})`;
+      document.getElementById("certStats").textContent = `Правильных ответов: ${score} из ${quizData.length} • Время работы: ~${mins} мин.`;
+      document.getElementById("certCode").textContent = `Код проверки: ${code}`;
+      document.getElementById("certificateSection").style.display = "block";
+      document.getElementById("certificateSection").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetAll() {
+      if (confirm("Сбросить прогресс и пройти урок заново?")) {
+        location.reload();
+      }
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
